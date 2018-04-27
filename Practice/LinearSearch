@@ -1,0 +1,14 @@
+__global__ void wordSearchSimple(char *pszData, int dataLength, char *pszTarget, int targetLen, int *pFound)
+{
+	int startIndex = blockDim.x*blockIdx.x + threadIdx.x;
+	if(*pFound > startIndex)
+	{
+		// only continue if an earlier instance hasn't already been found
+		int fMatch = 1;
+		for (int i=0; i < targetLen; i++)
+		{
+			if (pszData[startIndex+i] != pszTarget[i]) fMatch = 0;
+		}
+		if (fMatch) atomicMin(pFound, startIndex);
+	}
+}
